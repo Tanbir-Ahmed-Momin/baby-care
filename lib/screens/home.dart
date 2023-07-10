@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:baby_care/Api/api.dart';
 import 'package:baby_care/function/doctor.dart';
 import 'package:baby_care/function/guide.dart';
 import 'package:baby_care/function/profile.dart';
+import 'package:baby_care/model/post_model.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,7 +30,12 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFFFF4891),
         actions: [
           IconButton(
-            icon: Image.asset("image/tasp.jpeg"),
+            icon: ClipOval(
+                child: Image.asset("image/BabyCare.jpg",
+                  width: 30.0,
+                  height: 30.0,
+                  fit: BoxFit.cover,
+                )),
             onPressed: () {
               Navigator.push(context,MaterialPageRoute(builder: (context) => Profile()),
                        );
@@ -36,6 +45,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Color(0xFFFF4891),
         currentIndex: _currentIndex,
         onTap: (int index) {
           setState(() {
@@ -44,15 +54,15 @@ class _HomePageState extends State<HomePage> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.post_add),
+            icon: Icon(Icons.post_add, ),
             label: 'Post',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people),
+            icon: Icon(Icons.people, ),
             label: 'Doctor List',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
+            icon: Icon(Icons.list, ),
             label: 'Guidelines',
           ),
         ],
@@ -60,244 +70,141 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-class Post {
-  final String title;
-  final String details;
-  final String username;
-  final String postTime;
 
-  Post({
-    required this.title,
-    required this.details,
-    required this.username,
-    required this.postTime,
-  });
+class PostPage extends StatefulWidget {
+
+  @override
+  State<PostPage> createState() => _PostPageState();
 }
 
-class PostPage extends StatelessWidget {
+class _PostPageState extends State<PostPage> {
 
-   final List<Post> posts = [
-    Post(
-      title: 'What is Pneumonia',
-      details: 'Pneumonia is a form of acute respiratory infection that affects the lungs. The lungs are made up of small sacs called alveoli, which fill with air when a healthy person breathes. ',
-      username: 'Taspira',
-      postTime: 'June 18, 2023',
-    ),
-    Post(
-      title: 'Second Post',
-      details: 'This is the second post',
-      username: 'JaneSmith',
-      postTime: 'June 19, 2023',
-    ),
-    Post(
-      title: 'Second Post',
-      details: 'This is the second post',
-      username: 'JaneSmith',
-      postTime: 'June 19, 2023',
-    ),
-    Post(
-      title: 'Second Post',
-      details: 'This is the second post',
-      username: 'JaneSmith',
-      postTime: 'June 19, 2023',
-    ),
-    Post(
-      title: 'Second Post',
-      details: 'This is the second post',
-      username: 'JaneSmith',
-      postTime: 'June 19, 2023',
-    ),
-    Post(
-      title: 'Second Post',
-      details: 'This is the second post',
-      username: 'JaneSmith',
-      postTime: 'June 19, 2023',
-    ),
-  ];
+  late TextEditingController _postController;
+  late TextEditingController _postTitleController;
+
+  @override
+  void initState() {
+    super.initState();
+    _postController = TextEditingController();
+    _postTitleController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _postController.dispose();
+    _postTitleController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-         Container(
-      padding: EdgeInsets.all(16.0),
+    return Padding(
+      padding: const EdgeInsets.all(13.0),
       child: Column(
         children: [
           TextField(
-            decoration: InputDecoration(
-              hintText: 'Write your post here',
+            controller: _postTitleController,
+            decoration: const InputDecoration(
+              hintText: 'Write your post title',
               border: OutlineInputBorder(),
             ),
           ),
-          SizedBox(height: 16.0), // Adding some vertical spacing
-          ElevatedButton(
-            
-            onPressed: () {
-              // Handle the submit button press here
-              // You can access the text input using a TextEditingController
-            },
-            style: ElevatedButton.styleFrom(
-    backgroundColor: Color.fromARGB(255, 244, 54, 244), // Replace with the desired color
-  ),
-            child: Text('Post'),
-          ),
-        ],
-      ),
-    ),
-    //  Expanded(
-    //         child: ListView.builder(
-    //           itemCount: 10, // Replace with the actual number of organizations
-    //           itemBuilder: (context, index) {
-    //             return GestureDetector(
-    //               onTap: () {
-    //                 showDialog(
-    //                   context: context,
-    //                   builder: (context) {
-    //                     return AlertDialog(
-    //                       contentPadding: EdgeInsets.all(16),
-    //                       content: Column(
-    //                         mainAxisSize: MainAxisSize.min,
-    //                         children: [
-    //                           CircleAvatar(
-    //                             radius: 50,
-    //                             backgroundImage: AssetImage('image/demo.png'),
-    //                           ),
-    //                           SizedBox(height: 16),
-    //                           Text(
-    //                             'Organization Name $index',
-    //                             style: TextStyle(
-    //                               fontSize: 18,
-    //                               fontWeight: FontWeight.bold,
-    //                             ),
-    //                           ),
-    //                         ],
-    //                       ),
-    //                       actions: [
-    //                         TextButton(
-    //                           child: Text('Close'),
-    //                           onPressed: () {
-    //                             Navigator.of(context).pop();
-    //                           },
-    //                         ),
-    //                       ],
-    //                     );
-    //                   },
-    //                 );
-    //               },
-    //               child: Container(
-    //                 margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-    //                 padding: EdgeInsets.all(16),
-    //                 decoration: BoxDecoration(
-    //                   color: Colors.white,
-    //                   borderRadius: BorderRadius.circular(10),
-    //                   boxShadow: [
-    //                     BoxShadow(
-    //                       color: Colors.grey.withOpacity(0.3),
-    //                       spreadRadius: 2,
-    //                       blurRadius: 5,
-    //                       offset: Offset(0, 3),
-    //                     ),
-    //                   ],
-    //                 ),
-    //                 child: ListTile(
-    //                   leading: CircleAvatar(
-    //                     backgroundImage: AssetImage('image/demo.png'),
-    //                   ),
-    //                   title: Text('Organization Name $index'),
-    //                   trailing: Icon(
-    //                     Icons.arrow_forward,
-    //                     color: Colors.blue,
-    //                   ),
-    //                 ),
-    //               ),
-    //             );
-    //           },
-    //         ),
-    //       ),
-     Expanded(
-            child: ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                final post = posts[index];
-
-                return GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          contentPadding: EdgeInsets.all(16),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: AssetImage('image/demo.png'),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                post.title,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text('Details: ${post.details}'),
-                              SizedBox(height: 8),
-                              Text('Username: ${post.username}'),
-                              SizedBox(height: 8),
-                              Text('Post Time: ${post.postTime}'),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              child: Text('Close'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: AssetImage('image/demo.png'),
-                      ),
-                      title: Text(post.title),
-                      trailing: Icon(
-                        Icons.arrow_forward,
-                        color: Color.fromARGB(255, 243, 33, 222),
-                      ),
-                    ),
-                  ),
-                );
-              },
+          const SizedBox(height: 8.0,),
+          TextField(
+            controller: _postController,
+            minLines: 2,
+            maxLines: 4,
+            decoration: const InputDecoration(
+              hintText: 'Write your post description',
+              border: OutlineInputBorder(),
             ),
           ),
+          const SizedBox(height: 16.0), // Adding some vertical spacing
+          ElevatedButton(
+            onPressed: () async{
+              if(_postController.text.isNotEmpty && _postTitleController.text.isNotEmpty){
+               var postModel =  PostModel(userId: AppApi.firebaseAuth.currentUser!.uid,
+                   postedBy: AppApi.firebaseAuth.currentUser!.displayName??'Guest',
+                   details: _postController.text, time: DateTime.now().microsecondsSinceEpoch,
+                   title: _postTitleController.text);
+               await AppApi.postAPost(postModel);
+               _postController.clear();
+               _postTitleController.clear();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color.fromARGB(255, 244, 54, 244), // Replace with the desired color
+            ),
+            child: Text('Post'),
+          ),
+          const SizedBox(height: 10.0),
+
+          const Divider(),
+          Expanded(
+            child: StreamBuilder(
+              stream:  AppApi.getPosts(),
+              builder:(context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  case ConnectionState.done:
+                  case ConnectionState.active:
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.size,
+                        itemBuilder: (context, index) => _postWidget(PostModel.fromJson(
+                          snapshot.data!.docs[index].data(),
+                        ),
+                          snapshot.data!.docs[index].id,
+                        ),);
+                    } else {
+                      return const Center(
+                        child: Text('No post yet!'),
+                      );
+                    }
+                }
+              },
+            ),
+          )
+
         ],
       ),
     );
   }
+  
+  Widget _postWidget(PostModel postModel, String docId){
+    return ListTile(
+      onTap: (){
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title:Text('${postModel.title} by ${postModel.postedBy}'),
+            content: Text(postModel.details),
+            actions: [
+              if(postModel.userId == AppApi.firebaseAuth.currentUser!.uid)
+                IconButton(onPressed: ()async{
+                  Navigator.pop(context);
+                  await AppApi.deleteAPost(docId: docId);
+                },
+                    icon: const Icon(Icons.delete_forever, color: Colors.red,))
+            ],
+          ),
+        );
+      },
+      title: Text('${postModel.title} by ${postModel.postedBy}'),
+      subtitle: Text(postModel.details,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Icon(Icons.more_horiz),
+    );
+  }
 }
+
+
 
 class DoctorListPage extends StatelessWidget {
   @override

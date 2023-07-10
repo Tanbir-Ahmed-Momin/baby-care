@@ -1,4 +1,8 @@
+import 'package:baby_care/screens/doctor_page.dart';
 import 'package:flutter/material.dart';
+
+import '../Api/api.dart';
+import '../model/doctor_model.dart';
 
 class doctor extends StatefulWidget {
   const doctor({super.key});
@@ -8,15 +12,37 @@ class doctor extends StatefulWidget {
 }
 
 class _doctorState extends State<doctor> {
+
+  final _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //_searchController.addListener(_searchValue);
+  }
+
+  void _searchValue(){
+    setState(() {
+
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: Column(
         children: [
           Container(
             padding: EdgeInsets.all(16),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search...',
                 prefixIcon: Icon(Icons.search),
@@ -28,76 +54,60 @@ class _doctorState extends State<doctor> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 10, // Replace with the actual number of organizations
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          contentPadding: EdgeInsets.all(16),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: AssetImage('image/demo.png'),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Doctor Name $index',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              child: Text('Close'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
+            child: StreamBuilder(
+              stream:  AppApi.getDoctors(),
+              builder:(context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return const Center(
+                      child: CircularProgressIndicator(),
                     );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: AssetImage('image/demo.png'),
-                      ),
-                      title: Text('Prof. Dr. Narayan Chandra Saha '),
-                      trailing: Icon(
-                        Icons.arrow_forward,
-                        color: Color.fromARGB(255, 243, 33, 219),
-                      ),
-                    ),
-                  ),
-                );
+                  case ConnectionState.done:
+                  case ConnectionState.active:
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.size,
+                        itemBuilder: (context, index){
+                          return _doctorWidget(
+                              DoctorModel.fromJson( snapshot.data!.docs[index].data())
+                          );
+                        });
+                    } else {
+                      return const Center(
+                        child: Text('No doctor found!'),
+                      );
+                    }
+                }
               },
             ),
-          ),
+          )
         ],
+      ),
+    );
+  }
+  Widget _doctorWidget(DoctorModel doctorModel){
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 13.0,vertical: 4.0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          border: Border.all(
+              color:  Color(0xFFFF4891)
+          )
+      ),
+      child: ListTile(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => DoctorPage(doctorModel: doctorModel),));
+        },
+        leading: ClipOval(
+            child: Image.network(
+              doctorModel.image,
+              width: 40.0,
+              height: 40.0,
+            )),
+        title: Text(doctorModel.name),
+        subtitle: Text(doctorModel.hospital),
+        trailing: const Icon(Icons.arrow_forward, color:  Color(0xFFFF4891),),
       ),
     );
   }
