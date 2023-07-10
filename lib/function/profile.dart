@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../auth/login.dart';
+
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
 
@@ -14,6 +16,7 @@ class _ProfileState extends State<Profile> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _nidController = TextEditingController();
+
 
   @override
   void dispose() {
@@ -45,38 +48,38 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-  height: 80,
-  child: Stack(
-    children: [
-      ClipRRect(
-        borderRadius: BorderRadius.circular(60),
-        child: Container(
-          color: Colors.grey[300],
-          alignment: Alignment.center,
-          child: Icon(
-            Icons.cloud_upload,
-            size: 50,
-            color: Colors.grey[600],
-          ),
-        ),
-      ),
-      Positioned(
-        top: 8,
-        right: 8,
-        child: IconButton(
-          icon: Icon(
-            Icons.photo_camera,
-            size: 24,
-          ),
-          onPressed: () {
-            // Implement image upload functionality here
-          },
-        ),
-      ),
-    ],
-  ),
-),
+//             Container(
+//   height: 80,
+//   child: Stack(
+//     children: [
+//       ClipRRect(
+//         borderRadius: BorderRadius.circular(60),
+//         child: Container(
+//           color: Colors.grey[300],
+//           alignment: Alignment.center,
+//           child: Icon(
+//             Icons.cloud_upload,
+//             size: 50,
+//             color: Colors.grey[600],
+//           ),
+//         ),
+//       ),
+//       Positioned(
+//         top: 8,
+//         right: 8,
+//         child: IconButton(
+//           icon: Icon(
+//             Icons.photo_camera,
+//             size: 24,
+//           ),
+//           onPressed: () {
+//             // Implement image upload functionality here
+//           },
+//         ),
+//       ),
+//     ],
+//   ),
+// ),
 
           SizedBox(height: 16),
             Text('Name'),
@@ -86,22 +89,22 @@ class _ProfileState extends State<Profile> {
                 hintText: 'Enter your name',
               ),
             ),
-            SizedBox(height: 16),
-            Text('Number'),
-            TextField(
-              controller: _numberController,
-              decoration: InputDecoration(
-                hintText: 'Enter your number',
-              ),
-            ),
-            SizedBox(height: 16),
-            Text('Address'),
-            TextField(
-              controller: _addressController,
-              decoration: InputDecoration(
-                hintText: 'Enter your address',
-              ),
-            ),
+            // SizedBox(height: 16),
+            // Text('Number'),
+            // TextField(
+            //   controller: _numberController,
+            //   decoration: InputDecoration(
+            //     hintText: 'Enter your number',
+            //   ),
+            // ),
+            // SizedBox(height: 16),
+            // Text('Address'),
+            // TextField(
+            //   controller: _addressController,
+            //   decoration: InputDecoration(
+            //     hintText: 'Enter your address',
+            //   ),
+            // ),
             SizedBox(height: 16),
             Text('Email'),
             TextField(
@@ -110,21 +113,22 @@ class _ProfileState extends State<Profile> {
                 hintText: 'Enter your email',
               ),
             ),
-            SizedBox(height: 16),
-            Text('NID'),
-            TextField(
-              controller: _nidController,
-              decoration: InputDecoration(
-                hintText: 'Enter your NID',
-              ),
-            ),
+            // SizedBox(height: 16),
+            // Text('NID'),
+            // TextField(
+            //   controller: _nidController,
+            //   decoration: InputDecoration(
+            //     hintText: 'Enter your NID',
+            //   ),
+            // ),
             SizedBox(height: 32),
             Container(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async{
                   // Logout button action
-                  FirebaseAuth.instance.signOut();
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => login(),), (route) => false);
                 },
                 style: ElevatedButton.styleFrom(
     backgroundColor:Color(0xFFFF6DA7), // Replace with the desired color

@@ -30,7 +30,12 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFFFF4891),
         actions: [
           IconButton(
-            icon: Image.asset("image/tasp.jpeg"),
+            icon: ClipOval(
+                child: Image.asset("image/BabyCare.jpg",
+                  width: 30.0,
+                  height: 30.0,
+                  fit: BoxFit.cover,
+                )),
             onPressed: () {
               Navigator.push(context,MaterialPageRoute(builder: (context) => Profile()),
                        );

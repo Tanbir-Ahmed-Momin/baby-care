@@ -19,7 +19,7 @@ class _doctorState extends State<doctor> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _searchController.addListener(_searchValue);
+    //_searchController.addListener(_searchValue);
   }
 
   void _searchValue(){
