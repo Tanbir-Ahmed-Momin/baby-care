@@ -49,6 +49,7 @@ class _ProfileState extends State<Profile> {
               if(_nameController.text.isNotEmpty){
                 AppApi.firebaseAuth.currentUser!.updateDisplayName(_nameController.text);
               }
+              print(AppApi.firebaseAuth.currentUser);
             },
           ),
         ],

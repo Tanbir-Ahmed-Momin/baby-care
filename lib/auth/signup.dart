@@ -144,15 +144,7 @@ class _signupState extends State<signup> {
                     ],
                   ),
                 ),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                        margin: const EdgeInsets.fromLTRB(0, 0, 20, 10),
-                        child: const Text(
-                          "FORGOT PASSWORD?",
-                          style:
-                              TextStyle(color: Color(0xFFFF4891), fontSize: 11),
-                        ))),
+
                 Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 30),
                   child: Row(
