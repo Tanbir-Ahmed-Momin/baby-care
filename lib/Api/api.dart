@@ -19,10 +19,14 @@ class AppApi{
   }
 
   //post posts
-static Future<void> postAPost(PostModel postModel){
-    return firestore.collection('posts').doc().set(
-      postModel.toJson()
-    );
-}
+  static Future<void> postAPost(PostModel postModel){
+      return firestore.collection('posts').doc().set(
+        postModel.toJson()
+      );
+  }
+  //delete post
+  static Future<void> deleteAPost({required String docId}){
+    return firestore.collection('posts').doc(docId).delete();
+  }
 
 }

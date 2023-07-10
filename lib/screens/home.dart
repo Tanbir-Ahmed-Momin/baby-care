@@ -150,8 +150,10 @@ class _PostPageState extends State<PostPage> {
                       return ListView.builder(
                         itemCount: snapshot.data!.size,
                         itemBuilder: (context, index) => _postWidget(PostModel.fromJson(
-                          snapshot.data!.docs[index].data()
-                        )),);
+                          snapshot.data!.docs[index].data(),
+                        ),
+                          snapshot.data!.docs[index].id,
+                        ),);
                     } else {
                       return const Center(
                         child: Text('No post yet!'),
@@ -167,7 +169,7 @@ class _PostPageState extends State<PostPage> {
     );
   }
   
-  Widget _postWidget(PostModel postModel){
+  Widget _postWidget(PostModel postModel, String docId){
     return ListTile(
       onTap: (){
         showDialog<String>(
@@ -175,6 +177,14 @@ class _PostPageState extends State<PostPage> {
           builder: (BuildContext context) => AlertDialog(
             title:Text('${postModel.title} by ${postModel.postedBy}'),
             content: Text(postModel.details),
+            actions: [
+              if(postModel.userId == AppApi.firebaseAuth.currentUser!.uid)
+                IconButton(onPressed: ()async{
+                  Navigator.pop(context);
+                  await AppApi.deleteAPost(docId: docId);
+                },
+                    icon: const Icon(Icons.delete_forever, color: Colors.red,))
+            ],
           ),
         );
       },
