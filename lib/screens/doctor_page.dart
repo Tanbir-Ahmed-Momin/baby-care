@@ -26,19 +26,21 @@ class DoctorPage extends StatelessWidget {
                   fit: BoxFit.fill,
                 ),
                 const SizedBox(width: 8.0,),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(doctorModel.name,style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold
-                    ),),
-                    SizedBox(height: 8.0,),
-                    Text('Hospital: ${doctorModel.hospital}'),
-                    SizedBox(height: 8.0,),
-                    Text('Number: ${doctorModel.phone}'),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(doctorModel.name,style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold
+                      ),),
+                      SizedBox(height: 8.0,),
+                      Text('Hospital: ${doctorModel.hospital}'),
+                      SizedBox(height: 8.0,),
+                      Text('Number: ${doctorModel.phone}'),
+                    ],
+                  ),
                 )
               ],
             ),
