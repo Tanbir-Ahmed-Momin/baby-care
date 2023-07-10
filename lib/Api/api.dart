@@ -29,4 +29,10 @@ class AppApi{
     return firestore.collection('posts').doc(docId).delete();
   }
 
+  // get doctors
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getDoctors() {
+    return firestore
+        .collection('doctors').snapshots();
+  }
+
 }
