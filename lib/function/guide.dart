@@ -1,4 +1,8 @@
+import 'package:baby_care/model/guideLine_model.dart';
+import 'package:baby_care/screens/guide_line_page.dart';
 import 'package:flutter/material.dart';
+
+import '../Api/api.dart';
 
 class guide extends StatefulWidget {
   const guide({super.key});
@@ -28,76 +32,57 @@ class _guideState extends State<guide> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 10, // Replace with the actual number of organizations
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          contentPadding: EdgeInsets.all(16),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: AssetImage('image/demo.png'),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Guide $index',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              child: Text('Close'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
+            child: StreamBuilder(
+              stream:  AppApi.getGuideLines(),
+              builder:(context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return const Center(
+                      child: CircularProgressIndicator(),
                     );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: AssetImage('image/demo.png'),
-                      ),
-                      title: Text('Pneumonia is a form of acute respiratory'),
-                      trailing: Icon(
-                        Icons.arrow_forward,
-                        color: Color.fromARGB(255, 233, 33, 243),
-                      ),
-                    ),
-                  ),
-                );
+                  case ConnectionState.done:
+                  case ConnectionState.active:
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                          itemCount: snapshot.data!.size,
+                          itemBuilder: (context, index){
+                            return _guideLineWidget(
+                                GuideLineModel.fromJson( snapshot.data!.docs[index].data())
+                            );
+                          });
+                    } else {
+                      return const Center(
+                        child: Text('No guideline found!'),
+                      );
+                    }
+                }
               },
             ),
-          ),
+          )
         ],
+      ),
+    );
+  }
+
+  Widget _guideLineWidget(GuideLineModel model){
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 13.0,vertical: 4.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(
+          color:  Color(0xFFFF4891)
+        )
+      ),
+      child: ListTile(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => GuideLinePage(model: model),));
+        },
+        leading: const Icon(Icons.tips_and_updates,color:  Color(0xFFFF4891),),
+        title: Text(model.title),
+        trailing: const Icon(Icons.arrow_forward,
+        color:  Color(0xFFFF4891),
+        ),
       ),
     );
   }

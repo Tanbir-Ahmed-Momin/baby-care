@@ -35,4 +35,10 @@ class AppApi{
         .collection('doctors').snapshots();
   }
 
+  // get guidelines
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getGuideLines() {
+    return firestore
+        .collection('guidelines').snapshots();
+  }
+
 }

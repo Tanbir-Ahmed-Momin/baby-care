@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Color(0xFFFF4891),
         currentIndex: _currentIndex,
         onTap: (int index) {
           setState(() {
@@ -48,15 +49,15 @@ class _HomePageState extends State<HomePage> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.post_add),
+            icon: Icon(Icons.post_add, ),
             label: 'Post',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people),
+            icon: Icon(Icons.people, ),
             label: 'Doctor List',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
+            icon: Icon(Icons.list, ),
             label: 'Guidelines',
           ),
         ],
