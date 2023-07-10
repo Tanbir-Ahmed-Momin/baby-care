@@ -13,11 +13,13 @@ class signup extends StatefulWidget {
 class _signupState extends State<signup> {
   final emailController = TextEditingController() ;
   final passController = TextEditingController() ;
+  final nameController = TextEditingController() ;
   @override
   void dispose()
   {
     emailController.dispose();
     passController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
@@ -158,14 +160,42 @@ class _signupState extends State<signup> {
                         width: MediaQuery.of(context).size.width * 0.5,
                         height: 40,
                         child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFB226B2),
+                                    Color(0xFFFF4891)
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter)),
                           child: Material(
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.transparent,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(20),
                               splashColor: Colors.amber,
-                              onTap: () {
-                                FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passController.text.trim());
+                              onTap: ()async {
+                                try{
+                                  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passController.text.trim());
+                                  emailController.clear();
+                                  passController.clear();
+                                  nameController.clear();
+                                  const snackBar =  SnackBar(
+                                    content: Text("Account created successfully"),
+                                    backgroundColor: Colors.green,
+                                    behavior: SnackBarBehavior.floating,
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                } on FirebaseAuthException catch  (e){
+                                  final snackBar = SnackBar(
+                                    content: Text("Error: ${e.message??''}"),
+                                    backgroundColor: Colors.red,
+                                    behavior: SnackBarBehavior.floating,
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                }
+
                               },
                               child: const Center(
                                 child: Text(
@@ -177,15 +207,6 @@ class _signupState extends State<signup> {
                               ),
                             ),
                           ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFFB226B2),
-                                    Color(0xFFFF4891)
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter)),
                         ),
                       ),
                       // FloatingActionButton(
