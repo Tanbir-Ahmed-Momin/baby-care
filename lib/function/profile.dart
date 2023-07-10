@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../Api/api.dart';
 import '../auth/login.dart';
 
 class Profile extends StatefulWidget {
@@ -12,19 +13,25 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _numberController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
+  // TextEditingController _numberController = TextEditingController();
+  // TextEditingController _addressController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
-  TextEditingController _nidController = TextEditingController();
+  // TextEditingController _nidController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = AppApi.firebaseAuth.currentUser!.displayName??'Guest';
+    _emailController.text = AppApi.firebaseAuth.currentUser!.email??'';
+  }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _numberController.dispose();
-    _addressController.dispose();
+    // _numberController.dispose();
+    // _addressController.dispose();
     _emailController.dispose();
-    _nidController.dispose();
+    // _nidController.dispose();
     super.dispose();
   }
 
@@ -32,13 +39,16 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFFF6DA7),
+        backgroundColor: const Color(0xFFFF6DA7),
         title: Text('Profile'),
         actions: [
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () {
               // Save button action
+              if(_nameController.text.isNotEmpty){
+                AppApi.firebaseAuth.currentUser!.updateDisplayName(_nameController.text);
+              }
             },
           ),
         ],
@@ -109,6 +119,7 @@ class _ProfileState extends State<Profile> {
             Text('Email'),
             TextField(
               controller: _emailController,
+              readOnly: true,
               decoration: InputDecoration(
                 hintText: 'Enter your email',
               ),

@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
+import '../Api/api.dart';
+
 class signup extends StatefulWidget {
   const signup({super.key});
 
@@ -178,6 +180,7 @@ class _signupState extends State<signup> {
                               onTap: ()async {
                                 try{
                                   await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passController.text.trim());
+                                  await AppApi.firebaseAuth.currentUser!.updateDisplayName(nameController.text.isEmpty?'Guest':nameController.text);
                                   emailController.clear();
                                   passController.clear();
                                   nameController.clear();
