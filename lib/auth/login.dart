@@ -145,16 +145,34 @@ class _loginState extends State<login> {
                         width: MediaQuery.of(context).size.width * 0.5,
                         height: 40,
                         child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFB226B2),
+                                    Color(0xFFFF4891)
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter)),
                           child: Material(
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.transparent,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(20),
                               splashColor: Colors.amber,
-                              onTap: () {
-                                //  Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()),
-                                //    );
-                                FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text.trim(), password: passController.text.trim());
+                              onTap: ()  async{
+                               try{
+                                 await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text.trim(), password: passController.text.trim());
+                                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
+                               }on FirebaseAuthException catch  (e){
+                                 final snackBar = SnackBar(
+                                   content: Text("Error: ${e.message??''}"),
+                                   backgroundColor: Colors.red,
+                                   behavior: SnackBarBehavior.floating,
+                                 );
+                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                               }
+
                               },
                               child: const Center(
                                 child: Text(
@@ -166,15 +184,6 @@ class _loginState extends State<login> {
                               ),
                             ),
                           ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFFB226B2),
-                                    Color(0xFFFF4891)
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter)),
                         ),
                       ),
                       // FloatingActionButton(
