@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:baby_care/Api/api.dart';
 import 'package:baby_care/auth/login.dart';
 import 'package:baby_care/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../model/userModel.dart';
 
 class splash extends StatefulWidget {
   const splash({super.key});
@@ -16,11 +21,18 @@ class _splashState extends State<splash> {
     Future.delayed(const Duration(milliseconds: 5000), () {
       setState(() {
         if (FirebaseAuth.instance.currentUser != null) {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ),
-              (route) => false);
+          AppApi.firestore
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .get()
+              .then((value) {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      HomePage(userModel: UserModel.fromJson(value.data()!)),
+                ),
+                (route) => false);
+          });
         } else {
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(

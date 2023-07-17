@@ -4,6 +4,9 @@ import 'package:baby_care/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../Api/api.dart';
+import '../model/userModel.dart';
+
 class login extends StatefulWidget {
   const login({super.key});
 
@@ -172,11 +175,22 @@ class _loginState extends State<login> {
                                       .signInWithEmailAndPassword(
                                           email: emailController.text.trim(),
                                           password: passController.text.trim());
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => HomePage()),
-                                      (route) => false);
+                                  String userImage = "";
+                                  AppApi.firestore
+                                      .collection('users')
+                                      .doc(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .get()
+                                      .then((value) {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => HomePage(
+                                                  userModel: UserModel.fromJson(
+                                                      value.data()!),
+                                                )),
+                                        (route) => false);
+                                  });
                                 } on FirebaseAuthException catch (e) {
                                   final snackBar = SnackBar(
                                     content: Text("Error: ${e.message ?? ''}"),

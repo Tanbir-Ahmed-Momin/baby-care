@@ -5,9 +5,14 @@ import 'package:baby_care/function/doctor.dart';
 import 'package:baby_care/function/guide.dart';
 import 'package:baby_care/function/profile.dart';
 import 'package:baby_care/model/post_model.dart';
+import 'package:baby_care/model/userModel.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
+  final UserModel userModel;
+
+  const HomePage({super.key, required this.userModel});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -26,19 +31,22 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Baby Care'),
+        title: const Text('Baby Care'),
         backgroundColor: Color(0xFFFF4891),
         actions: [
           IconButton(
             icon: ClipOval(
-                child: Image.asset("image/BabyCare.jpg",
-                  width: 30.0,
-                  height: 30.0,
-                  fit: BoxFit.cover,
-                )),
+                child: Image.network(
+              widget.userModel.photoUrl,
+              width: 30.0,
+              height: 30.0,
+              fit: BoxFit.cover,
+            )),
             onPressed: () {
-              Navigator.push(context,MaterialPageRoute(builder: (context) => Profile()),
-                       );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Profile()),
+              );
             },
           ),
         ],
@@ -54,15 +62,21 @@ class _HomePageState extends State<HomePage> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.post_add, ),
+            icon: Icon(
+              Icons.post_add,
+            ),
             label: 'Post',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people, ),
+            icon: Icon(
+              Icons.people,
+            ),
             label: 'Doctor List',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list, ),
+            icon: Icon(
+              Icons.list,
+            ),
             label: 'Guidelines',
           ),
         ],
@@ -72,13 +86,11 @@ class _HomePageState extends State<HomePage> {
 }
 
 class PostPage extends StatefulWidget {
-
   @override
   State<PostPage> createState() => _PostPageState();
 }
 
 class _PostPageState extends State<PostPage> {
-
   late TextEditingController _postController;
   late TextEditingController _postTitleController;
 
@@ -109,7 +121,9 @@ class _PostPageState extends State<PostPage> {
               border: OutlineInputBorder(),
             ),
           ),
-          const SizedBox(height: 8.0,),
+          const SizedBox(
+            height: 8.0,
+          ),
           TextField(
             controller: _postController,
             minLines: 2,
@@ -121,19 +135,24 @@ class _PostPageState extends State<PostPage> {
           ),
           const SizedBox(height: 16.0), // Adding some vertical spacing
           ElevatedButton(
-            onPressed: () async{
-              if(_postController.text.isNotEmpty && _postTitleController.text.isNotEmpty){
-               var postModel =  PostModel(userId: AppApi.firebaseAuth.currentUser!.uid,
-                   postedBy: AppApi.firebaseAuth.currentUser!.displayName??'Guest',
-                   details: _postController.text, time: DateTime.now().microsecondsSinceEpoch,
-                   title: _postTitleController.text);
-               await AppApi.postAPost(postModel);
-               _postController.clear();
-               _postTitleController.clear();
+            onPressed: () async {
+              if (_postController.text.isNotEmpty &&
+                  _postTitleController.text.isNotEmpty) {
+                var postModel = PostModel(
+                    userId: AppApi.firebaseAuth.currentUser!.uid,
+                    postedBy:
+                        AppApi.firebaseAuth.currentUser!.displayName ?? 'Guest',
+                    details: _postController.text,
+                    time: DateTime.now().microsecondsSinceEpoch,
+                    title: _postTitleController.text);
+                await AppApi.postAPost(postModel);
+                _postController.clear();
+                _postTitleController.clear();
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 244, 54, 244), // Replace with the desired color
+              backgroundColor: Color.fromARGB(
+                  255, 244, 54, 244), // Replace with the desired color
             ),
             child: Text('Post'),
           ),
@@ -142,8 +161,8 @@ class _PostPageState extends State<PostPage> {
           const Divider(),
           Expanded(
             child: StreamBuilder(
-              stream:  AppApi.getPosts(),
-              builder:(context, snapshot) {
+              stream: AppApi.getPosts(),
+              builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
                   case ConnectionState.none:
@@ -155,11 +174,13 @@ class _PostPageState extends State<PostPage> {
                     if (snapshot.hasData) {
                       return ListView.builder(
                         itemCount: snapshot.data!.size,
-                        itemBuilder: (context, index) => _postWidget(PostModel.fromJson(
-                          snapshot.data!.docs[index].data(),
-                        ),
+                        itemBuilder: (context, index) => _postWidget(
+                          PostModel.fromJson(
+                            snapshot.data!.docs[index].data(),
+                          ),
                           snapshot.data!.docs[index].id,
-                        ),);
+                        ),
+                      );
                     } else {
                       return const Center(
                         child: Text('No post yet!'),
@@ -169,33 +190,37 @@ class _PostPageState extends State<PostPage> {
               },
             ),
           )
-
         ],
       ),
     );
   }
-  
-  Widget _postWidget(PostModel postModel, String docId){
+
+  Widget _postWidget(PostModel postModel, String docId) {
     return ListTile(
-      onTap: (){
+      onTap: () {
         showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-            title:Text('${postModel.title} by ${postModel.postedBy}'),
+            title: Text('${postModel.title} by ${postModel.postedBy}'),
             content: Text(postModel.details),
             actions: [
-              if(postModel.userId == AppApi.firebaseAuth.currentUser!.uid)
-                IconButton(onPressed: ()async{
-                  Navigator.pop(context);
-                  await AppApi.deleteAPost(docId: docId);
-                },
-                    icon: const Icon(Icons.delete_forever, color: Colors.red,))
+              if (postModel.userId == AppApi.firebaseAuth.currentUser!.uid)
+                IconButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await AppApi.deleteAPost(docId: docId);
+                    },
+                    icon: const Icon(
+                      Icons.delete_forever,
+                      color: Colors.red,
+                    ))
             ],
           ),
         );
       },
       title: Text('${postModel.title} by ${postModel.postedBy}'),
-      subtitle: Text(postModel.details,
+      subtitle: Text(
+        postModel.details,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -203,8 +228,6 @@ class _PostPageState extends State<PostPage> {
     );
   }
 }
-
-
 
 class DoctorListPage extends StatelessWidget {
   @override
