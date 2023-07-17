@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
     DoctorListPage(),
     PostSubmissionPage(),
     GuidelinesPage(),
+    Text('baby')
   ];
 
   @override
@@ -101,6 +102,12 @@ class _HomePageState extends State<HomePage> {
               Icons.list,
             ),
             label: 'Guidelines',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.baby_changing_station,
+            ),
+            label: 'Babysitting',
           ),
         ],
       ),
