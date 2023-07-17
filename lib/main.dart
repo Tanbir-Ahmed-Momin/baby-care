@@ -16,9 +16,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: "Baby Care",
-      home: splash(),
+      theme: ThemeData(
+          useMaterial3: true,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFF4891),
+            foregroundColor: Colors.white,
+          )),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFFFF4891),
+            foregroundColor: Colors.white,
+          ),
+          inputDecorationTheme: const InputDecorationTheme(
+              labelStyle: TextStyle(color: Color(0xFFFF4891)),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFF4891))))),
+      home: const splash(),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:baby_care/auth/signup.dart';
+import 'package:baby_care/screens/forget_password.dart';
 import 'package:baby_care/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,22 +12,20 @@ class login extends StatefulWidget {
 }
 
 class _loginState extends State<login> {
-   
-  final emailController = TextEditingController() ;
-  final passController = TextEditingController() ;
-
+  final emailController = TextEditingController();
+  final passController = TextEditingController();
 
   double getSmallDiameter(BuildContext context) =>
       MediaQuery.of(context).size.width * 2 / 3;
   double getBiglDiameter(BuildContext context) =>
       MediaQuery.of(context).size.width * 7 / 8;
   @override
-  void dispose()
-  {
+  void dispose() {
     emailController.dispose();
     passController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +50,14 @@ class _loginState extends State<login> {
             left: -getBiglDiameter(context) / 4,
             top: -getBiglDiameter(context) / 4,
             child: Container(
+              width: getBiglDiameter(context),
+              height: getBiglDiameter(context),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                      colors: [Color(0xFFB226B2), Color(0xFFFF4891)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter)),
               child: const Center(
                 child: Text(
                   "Baby Care",
@@ -60,14 +67,6 @@ class _loginState extends State<login> {
                       color: Colors.white),
                 ),
               ),
-              width: getBiglDiameter(context),
-              height: getBiglDiameter(context),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                      colors: [Color(0xFFB226B2), Color(0xFFFF4891)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter)),
             ),
           ),
           Positioned(
@@ -92,8 +91,8 @@ class _loginState extends State<login> {
                   margin: const EdgeInsets.fromLTRB(20, 300, 20, 10),
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 25),
                   child: Column(
-                    children:  <Widget>[
-                       TextField(
+                    children: <Widget>[
+                      TextField(
                         controller: emailController,
                         decoration: InputDecoration(
                             icon: const Icon(
@@ -102,14 +101,16 @@ class _loginState extends State<login> {
                             ),
                             focusedBorder: UnderlineInputBorder(
                                 borderSide:
-                                    BorderSide(color: Colors.grey.shade100 )),
+                                    BorderSide(color: Colors.grey.shade100)),
                             labelText: "Email",
                             enabledBorder: InputBorder.none,
                             labelStyle: const TextStyle(color: Colors.grey)),
                       ),
-                      SizedBox(height: 10,),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       TextField(
-                       controller: passController,
+                        controller: passController,
                         obscureText: true,
                         decoration: InputDecoration(
                             icon: const Icon(
@@ -122,20 +123,25 @@ class _loginState extends State<login> {
                             labelText: "Password",
                             enabledBorder: InputBorder.none,
                             labelStyle: const TextStyle(color: Colors.grey)),
-                            
                       )
                     ],
                   ),
                 ),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                        margin: const EdgeInsets.fromLTRB(0, 0, 20, 10),
-                        child: const Text(
-                          "FORGOT PASSWORD?",
-                          style:
-                              TextStyle(color: Color(0xFFFF4891), fontSize: 11),
-                        ))),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const ForgetPasswordPage()));
+                  },
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                          margin: const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                          child: const Text(
+                            "FORGOT PASSWORD?",
+                            style: TextStyle(
+                                color: Color(0xFFFF4891), fontSize: 11),
+                          ))),
+                ),
                 Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 30),
                   child: Row(
@@ -160,19 +166,26 @@ class _loginState extends State<login> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(20),
                               splashColor: Colors.amber,
-                              onTap: ()  async{
-                               try{
-                                 await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text.trim(), password: passController.text.trim());
-                                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
-                               }on FirebaseAuthException catch  (e){
-                                 final snackBar = SnackBar(
-                                   content: Text("Error: ${e.message??''}"),
-                                   backgroundColor: Colors.red,
-                                   behavior: SnackBarBehavior.floating,
-                                 );
-                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                               }
-
+                              onTap: () async {
+                                try {
+                                  await FirebaseAuth.instance
+                                      .signInWithEmailAndPassword(
+                                          email: emailController.text.trim(),
+                                          password: passController.text.trim());
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HomePage()),
+                                      (route) => false);
+                                } on FirebaseAuthException catch (e) {
+                                  final snackBar = SnackBar(
+                                    content: Text("Error: ${e.message ?? ''}"),
+                                    backgroundColor: Colors.red,
+                                    behavior: SnackBarBehavior.floating,
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                }
                               },
                               child: const Center(
                                 child: Text(
@@ -207,7 +220,7 @@ class _loginState extends State<login> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children:  <Widget>[
+                  children: <Widget>[
                     Text(
                       "DON'T HAVE AN ACCOUNT ? ",
                       style: TextStyle(
@@ -215,20 +228,20 @@ class _loginState extends State<login> {
                           color: Colors.grey,
                           fontWeight: FontWeight.w500),
                     ),
-                 TextButton(
-                   onPressed: (){
-                    Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => signup()),
-            );
-                   },
-                  child:  Text(
-                      " SIGN UP",
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: Color(0xFFFF4891),
-                          fontWeight: FontWeight.w700),
-                    ))
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => signup()),
+                          );
+                        },
+                        child: Text(
+                          " SIGN UP",
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: Color(0xFFFF4891),
+                              fontWeight: FontWeight.w700),
+                        ))
                   ],
                 )
               ],
