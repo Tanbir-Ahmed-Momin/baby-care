@@ -13,23 +13,31 @@ class signup extends StatefulWidget {
 }
 
 class _signupState extends State<signup> {
-  final emailController = TextEditingController() ;
-  final passController = TextEditingController() ;
-  final nameController = TextEditingController() ;
+  final emailController = TextEditingController();
+  final passController = TextEditingController();
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
+
   @override
-  void dispose()
-  {
-    emailController.dispose();
-    passController.dispose();
-    nameController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    phoneController.text = "+880";
   }
 
   @override
-   double getSmallDiameter(BuildContext context) =>
+  void dispose() {
+    emailController.dispose();
+    passController.dispose();
+    nameController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
+
+  double getSmallDiameter(BuildContext context) =>
       MediaQuery.of(context).size.width * 2 / 3;
   double getBiglDiameter(BuildContext context) =>
       MediaQuery.of(context).size.width * 7 / 8;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEEEEEE),
@@ -94,9 +102,10 @@ class _signupState extends State<signup> {
                   margin: const EdgeInsets.fromLTRB(20, 300, 20, 10),
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 25),
                   child: Column(
-                    children:  <Widget>[
-                       //TextFieldInput(textEditingController: textEditingController, hintText: hintText, textInputType: textInputType),
-                        TextField(
+                    children: <Widget>[
+                      //TextFieldInput(textEditingController: textEditingController, hintText: hintText, textInputType: textInputType),
+                      TextField(
+                        controller: nameController,
                         decoration: InputDecoration(
                             icon: const Icon(
                               Icons.person,
@@ -104,13 +113,15 @@ class _signupState extends State<signup> {
                             ),
                             focusedBorder: UnderlineInputBorder(
                                 borderSide:
-                                    BorderSide(color: Colors.grey.shade100 )),
+                                    BorderSide(color: Colors.grey.shade100)),
                             labelText: "Name",
                             enabledBorder: InputBorder.none,
                             labelStyle: const TextStyle(color: Colors.grey)),
                       ),
-                      SizedBox(height: 10,),
-                       TextField(
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
                         controller: emailController,
                         decoration: InputDecoration(
                             icon: const Icon(
@@ -119,12 +130,32 @@ class _signupState extends State<signup> {
                             ),
                             focusedBorder: UnderlineInputBorder(
                                 borderSide:
-                                    BorderSide(color: Colors.grey.shade100 )),
+                                    BorderSide(color: Colors.grey.shade100)),
                             labelText: "Email",
                             enabledBorder: InputBorder.none,
                             labelStyle: const TextStyle(color: Colors.grey)),
                       ),
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: phoneController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                            icon: const Icon(
+                              Icons.email,
+                              color: Color(0xFFFF4891),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade100)),
+                            labelText: "Phone Number",
+                            enabledBorder: InputBorder.none,
+                            labelStyle: const TextStyle(color: Colors.grey)),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       TextField(
                         controller: passController,
                         obscureText: true,
@@ -139,12 +170,10 @@ class _signupState extends State<signup> {
                             labelText: "Password",
                             enabledBorder: InputBorder.none,
                             labelStyle: const TextStyle(color: Colors.grey)),
-                            
                       )
                     ],
                   ),
                 ),
-
                 Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 30),
                   child: Row(
@@ -169,28 +198,41 @@ class _signupState extends State<signup> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(20),
                               splashColor: Colors.amber,
-                              onTap: ()async {
-                                try{
-                                  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passController.text.trim());
-                                  await AppApi.firebaseAuth.currentUser!.updateDisplayName(nameController.text.isEmpty?'Guest':nameController.text);
+                              onTap: () async {
+                                try {
+                                  await FirebaseAuth.instance
+                                      .createUserWithEmailAndPassword(
+                                          email: emailController.text.trim(),
+                                          password: passController.text.trim());
+
+                                  await AppApi.createProfile(
+                                      name: nameController.text.isEmpty
+                                          ? 'Guest'
+                                          : nameController.text.trim(),
+                                      phone: phoneController.text.isEmpty
+                                          ? '+880'
+                                          : phoneController.text.trim());
+                                  phoneController.clear();
                                   emailController.clear();
                                   passController.clear();
                                   nameController.clear();
-                                  const snackBar =  SnackBar(
-                                    content: Text("Account created successfully"),
+                                  const snackBar = SnackBar(
+                                    content:
+                                        Text("Account created successfully"),
                                     backgroundColor: Colors.green,
                                     behavior: SnackBarBehavior.floating,
                                   );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                } on FirebaseAuthException catch  (e){
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                } on FirebaseAuthException catch (e) {
                                   final snackBar = SnackBar(
-                                    content: Text("Error: ${e.message??''}"),
+                                    content: Text("Error: ${e.message ?? ''}"),
                                     backgroundColor: Colors.red,
                                     behavior: SnackBarBehavior.floating,
                                   );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
                                 }
-
                               },
                               child: const Center(
                                 child: Text(
@@ -204,22 +246,6 @@ class _signupState extends State<signup> {
                           ),
                         ),
                       ),
-                      // FloatingActionButton(
-                      //   onPressed: () {},
-                      //   mini: true,
-                      //   elevation: 0,
-                      //   child: const Image(
-                      //     image: AssetImage("assets/facebook2.png"),
-                      //   ),
-                      // ),
-                      // FloatingActionButton(
-                      //   onPressed: () {},
-                      //   mini: true,
-                      //   elevation: 0,
-                      //   child: const Image(
-                      //     image: AssetImage("assets/twitter.png"),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -232,19 +258,21 @@ class _signupState extends State<signup> {
                           fontSize: 11,
                           color: Colors.grey,
                           fontWeight: FontWeight.w500),
-                    ), 
+                    ),
                     TextButton(
-                   onPressed: (){
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => login()),
-                       );
-                   },
-                  child:  Text(
-                      " SIGN IN",
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: Color(0xFFFF4891),
-                          fontWeight: FontWeight.w700),
-                    ))
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => login()),
+                          );
+                        },
+                        child: Text(
+                          " SIGN IN",
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: Color(0xFFFF4891),
+                              fontWeight: FontWeight.w700),
+                        ))
                   ],
                 )
               ],
@@ -252,6 +280,6 @@ class _signupState extends State<signup> {
           )
         ],
       ),
-    );;
+    );
   }
 }

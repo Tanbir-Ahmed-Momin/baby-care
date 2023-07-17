@@ -18,17 +18,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Baby Care",
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return HomePage();
-          } else {
-            return splash();
-          }
-        },
-      ),
+      theme: ThemeData(
+          useMaterial3: true,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFF4891),
+            foregroundColor: Colors.white,
+          )),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFFFF4891),
+            foregroundColor: Colors.white,
+          ),
+          inputDecorationTheme: const InputDecorationTheme(
+              labelStyle: TextStyle(color: Color(0xFFFF4891)),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFF4891))))),
+      home: const splash(),
     );
   }
 }
-
