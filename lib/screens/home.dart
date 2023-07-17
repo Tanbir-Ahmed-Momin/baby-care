@@ -7,6 +7,7 @@ import 'package:baby_care/function/profile.dart';
 import 'package:baby_care/model/post_model.dart';
 import 'package:baby_care/model/userModel.dart';
 import 'package:baby_care/screens/post_details.dart';
+import 'package:baby_care/screens/post_submission_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     PostPage(),
     DoctorListPage(),
+    PostSubmissionPage(),
     GuidelinesPage(),
   ];
 
@@ -68,6 +70,7 @@ class _HomePageState extends State<HomePage> {
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: const Color(0xFFFF4891),
+        unselectedItemColor: Colors.grey,
         currentIndex: _currentIndex,
         onTap: (int index) {
           setState(() {
@@ -77,15 +80,21 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.post_add,
+              Icons.home_filled,
             ),
-            label: 'Post',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.people,
             ),
             label: 'Doctor List',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.post_add,
+            ),
+            label: 'Post',
           ),
           BottomNavigationBarItem(
             icon: Icon(
@@ -126,85 +135,34 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(13.0),
-      child: Column(
-        children: [
-          TextField(
-            controller: _postTitleController,
-            decoration: const InputDecoration(
-              hintText: 'Write your post title',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(
-            height: 8.0,
-          ),
-          TextField(
-            controller: _postController,
-            minLines: 2,
-            maxLines: 4,
-            decoration: const InputDecoration(
-              hintText: 'Write your post description',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16.0), // Adding some vertical spacing
-          ElevatedButton(
-            onPressed: () async {
-              if (_postController.text.isNotEmpty &&
-                  _postTitleController.text.isNotEmpty) {
-                var postModel = PostModel(
-                    userId: AppApi.firebaseAuth.currentUser!.uid,
-                    postedBy:
-                        AppApi.firebaseAuth.currentUser!.displayName ?? 'Guest',
-                    details: _postController.text,
-                    time: DateTime.now().microsecondsSinceEpoch,
-                    title: _postTitleController.text);
-                await AppApi.postAPost(postModel);
-                _postController.clear();
-                _postTitleController.clear();
+      child: StreamBuilder(
+        stream: AppApi.getPosts(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+            case ConnectionState.none:
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            case ConnectionState.done:
+            case ConnectionState.active:
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: snapshot.data!.size,
+                  itemBuilder: (context, index) => _postWidget(
+                    PostModel.fromJson(
+                      snapshot.data!.docs[index].data(),
+                    ),
+                    snapshot.data!.docs[index].id,
+                  ),
+                );
+              } else {
+                return const Center(
+                  child: Text('No post yet!'),
+                );
               }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(
-                  255, 244, 54, 244), // Replace with the desired color
-            ),
-            child: Text('Post'),
-          ),
-          const SizedBox(height: 10.0),
-
-          const Divider(),
-          Expanded(
-            child: StreamBuilder(
-              stream: AppApi.getPosts(),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                  case ConnectionState.none:
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  case ConnectionState.done:
-                  case ConnectionState.active:
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        itemCount: snapshot.data!.size,
-                        itemBuilder: (context, index) => _postWidget(
-                          PostModel.fromJson(
-                            snapshot.data!.docs[index].data(),
-                          ),
-                          snapshot.data!.docs[index].id,
-                        ),
-                      );
-                    } else {
-                      return const Center(
-                        child: Text('No post yet!'),
-                      );
-                    }
-                }
-              },
-            ),
-          )
-        ],
+          }
+        },
       ),
     );
   }
