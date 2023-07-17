@@ -11,8 +11,9 @@ import '../auth/login.dart';
 import '../model/userModel.dart';
 
 class Profile extends StatefulWidget {
-  final UserModel userModel;
-  const Profile({Key? key, required this.userModel}) : super(key: key);
+  const Profile({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -173,7 +174,7 @@ class _ProfileState extends State<Profile> {
           child: StreamBuilder(
               stream: AppApi.firestore
                   .collection('users')
-                  .doc(widget.userModel.uid)
+                  .doc(AppApi.firebaseAuth.currentUser!.uid)
                   .snapshots(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {

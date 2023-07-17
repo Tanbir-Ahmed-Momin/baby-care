@@ -9,9 +9,9 @@ import 'package:baby_care/model/userModel.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  final UserModel userModel;
-
-  const HomePage({super.key, required this.userModel});
+  const HomePage({
+    super.key,
+  });
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
           StreamBuilder(
               stream: AppApi.firestore
                   .collection('users')
-                  .doc(widget.userModel.uid)
+                  .doc(AppApi.firebaseAuth.currentUser!.uid)
                   .snapshots(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -56,10 +56,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => Profile(
-                                    userModel: widget.userModel,
-                                  )),
+                          MaterialPageRoute(builder: (context) => Profile()),
                         );
                       },
                     );

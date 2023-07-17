@@ -21,20 +21,11 @@ class _splashState extends State<splash> {
     Future.delayed(const Duration(milliseconds: 700), () {
       setState(() {
         if (FirebaseAuth.instance.currentUser != null) {
-          AppApi.firestore
-              .collection('users')
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .get()
-              .then((value) {
-            UserModel userModel = UserModel.fromJson(value.data()!);
-            AppApi.currentUserModel = userModel;
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      HomePage(userModel: UserModel.fromJson(value.data()!)),
-                ),
-                (route) => false);
-          });
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+              (route) => false);
         } else {
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(

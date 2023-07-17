@@ -96,7 +96,4 @@ class AppApi {
           'https://firebasestorage.googleapis.com/v0/b/babycare-184d3.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=e5594834-444e-4943-9251-118e94aa62bd'
     });
   }
-
-  /// current user model
-  static late UserModel currentUserModel;
 }

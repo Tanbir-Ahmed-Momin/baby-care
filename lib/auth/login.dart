@@ -181,16 +181,10 @@ class _loginState extends State<login> {
                                           .instance.currentUser!.uid)
                                       .get()
                                       .then((value) {
-                                    UserModel userModel =
-                                        UserModel.fromJson(value.data()!);
-                                    AppApi.currentUserModel = userModel;
                                     Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                                  userModel: UserModel.fromJson(
-                                                      value.data()!),
-                                                )),
+                                            builder: (context) => HomePage()),
                                         (route) => false);
                                   });
                                 } on FirebaseAuthException catch (e) {
