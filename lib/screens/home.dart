@@ -6,6 +6,7 @@ import 'package:baby_care/function/guide.dart';
 import 'package:baby_care/function/profile.dart';
 import 'package:baby_care/model/post_model.dart';
 import 'package:baby_care/model/userModel.dart';
+import 'package:baby_care/screens/post_details.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -73,7 +74,7 @@ class _HomePageState extends State<HomePage> {
             _currentIndex = index;
           });
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(
               Icons.post_add,
@@ -211,33 +212,66 @@ class _PostPageState extends State<PostPage> {
   Widget _postWidget(PostModel postModel, String docId) {
     return ListTile(
       onTap: () {
-        showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: Text('${postModel.title} by ${postModel.postedBy}'),
-            content: Text(postModel.details),
-            actions: [
-              if (postModel.userId == AppApi.firebaseAuth.currentUser!.uid)
-                IconButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      await AppApi.deleteAPost(docId: docId);
-                    },
-                    icon: const Icon(
-                      Icons.delete_forever,
-                      color: Colors.red,
-                    ))
-            ],
-          ),
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PostDetails(
+                    postModel: postModel,
+                    docId: docId,
+                  )),
         );
       },
-      title: Text('${postModel.title} by ${postModel.postedBy}'),
-      subtitle: Text(
-        postModel.details,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+      leading: StreamBuilder(
+          stream: AppApi.firestore
+              .collection('users')
+              .doc(postModel.userId.trim())
+              .snapshots(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+              case ConnectionState.none:
+                return const SizedBox();
+              case ConnectionState.done:
+              case ConnectionState.active:
+                return ClipOval(
+                    child: Image.network(
+                  snapshot.data!.get('photoUrl'),
+                  width: 30.0,
+                  height: 30.0,
+                  fit: BoxFit.cover,
+                ));
+            }
+          }),
+      titleAlignment: ListTileTitleAlignment.top,
+      title: Text(
+        postModel.postedBy,
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
-      trailing: Icon(Icons.more_horiz),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            postModel.details,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(
+            height: 5.0,
+          ),
+          StreamBuilder(
+              stream: AppApi.getPostsComments(docId),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return const SizedBox();
+                  case ConnectionState.done:
+                  case ConnectionState.active:
+                    return Text('${snapshot.data?.size ?? 0} replies');
+                }
+              })
+        ],
+      ),
     );
   }
 }

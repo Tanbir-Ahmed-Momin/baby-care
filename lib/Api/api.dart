@@ -22,6 +22,16 @@ class AppApi {
     return firestore.collection('posts').snapshots();
   }
 
+  //get post comments
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getPostsComments(
+      String id) {
+    return firestore
+        .collection('posts')
+        .doc(id)
+        .collection('comments')
+        .snapshots();
+  }
+
   //post posts
   static Future<void> postAPost(PostModel postModel) {
     return firestore.collection('posts').doc().set(postModel.toJson());
