@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:baby_care/model/post_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../model/userModel.dart';
 
@@ -12,6 +13,9 @@ class AppApi {
 
   // firestore instance
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  //firebase storage
+  static FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
   // get post
   static Stream<QuerySnapshot<Map<String, dynamic>>> getPosts() {

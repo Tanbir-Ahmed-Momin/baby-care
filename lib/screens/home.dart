@@ -33,24 +33,38 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Baby Care'),
         actions: [
-          IconButton(
-            icon: ClipOval(
-                child: Image.network(
-              widget.userModel.photoUrl,
-              width: 30.0,
-              height: 30.0,
-              fit: BoxFit.cover,
-            )),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Profile(
-                          userModel: widget.userModel,
-                        )),
-              );
-            },
-          ),
+          StreamBuilder(
+              stream: AppApi.firestore
+                  .collection('users')
+                  .doc(widget.userModel.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return const Center(child: CircularProgressIndicator());
+                  case ConnectionState.done:
+                  case ConnectionState.active:
+                    return IconButton(
+                      icon: ClipOval(
+                          child: Image.network(
+                        snapshot.data!.get('photoUrl'),
+                        width: 30.0,
+                        height: 30.0,
+                        fit: BoxFit.cover,
+                      )),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Profile(
+                                    userModel: widget.userModel,
+                                  )),
+                        );
+                      },
+                    );
+                }
+              }),
         ],
       ),
       body: _pages[_currentIndex],

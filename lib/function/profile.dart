@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:baby_care/model/doctor_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../Api/api.dart';
 import '../auth/login.dart';
@@ -91,6 +95,32 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Future<void> updateImage(File file) async {
+    final ext = file.path.split('.').last;
+
+    //storage file ref with path
+    final ref = AppApi.firebaseStorage
+        .ref()
+        .child('profiles/${AppApi.firebaseAuth.currentUser!.uid}.$ext');
+
+    //uploading image
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .then((p0) {});
+
+    var imageUrl = await ref.getDownloadURL();
+    imagePath = "";
+    setState(() {
+      isImagePicked = false;
+    });
+    return AppApi.firestore
+        .collection('users')
+        .doc(AppApi.firebaseAuth.currentUser!.uid)
+        .update({
+      "photoUrl": imageUrl,
+    });
+  }
+
   @override
   void dispose() {
     _commonController.dispose();
@@ -102,6 +132,21 @@ class _ProfileState extends State<Profile> {
     super.initState();
   }
 
+  /// image picker
+  String imagePath = "";
+  bool isImagePicked = false;
+  void imagePicker() async {
+    final ImagePicker picker = ImagePicker();
+    // Pick an image.
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      imagePath = image.path;
+      setState(() {
+        isImagePicked = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,7 +154,7 @@ class _ProfileState extends State<Profile> {
         title: const Text('Profile'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () async {
               // Logout button action
               await FirebaseAuth.instance.signOut();
@@ -125,11 +170,11 @@ class _ProfileState extends State<Profile> {
       ),
       body: SingleChildScrollView(
           padding: EdgeInsets.all(16),
-          child: FutureBuilder(
-              future: AppApi.firestore
+          child: StreamBuilder(
+              stream: AppApi.firestore
                   .collection('users')
                   .doc(widget.userModel.uid)
-                  .get(),
+                  .snapshots(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -142,20 +187,68 @@ class _ProfileState extends State<Profile> {
                       children: [
                         Stack(
                           children: [
-                            Image.network(
-                              widget.userModel.photoUrl,
-                              width: 120.0,
-                              height: 120.0,
-                            ),
+                            isImagePicked
+                                ? Image.file(
+                                    File(
+                                      imagePath,
+                                    ),
+                                    width: 120.0,
+                                    height: 120.0,
+                                  )
+                                : Image.network(
+                                    snapshot.data!.get('photoUrl'),
+                                    width: 120.0,
+                                    height: 120.0,
+                                  ),
                             Positioned(
-                                top: -10,
-                                right: -10,
-                                child: IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.edit)))
+                                top: 0,
+                                right: 0,
+                                child: CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: Colors.white,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      isImagePicked ? Icons.save : Icons.edit,
+                                      color: isImagePicked
+                                          ? Colors.green
+                                          : Colors.black,
+                                      size: 18.0,
+                                    ),
+                                    onPressed: () {
+                                      if (isImagePicked) {
+                                        updateImage(File(imagePath));
+                                      } else {
+                                        imagePicker();
+                                      }
+                                    },
+                                  ),
+                                )),
+                            Visibility(
+                              visible: isImagePicked,
+                              child: Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Colors.white,
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: Colors.red,
+                                        size: 18.0,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          isImagePicked = false;
+                                          imagePath = "";
+                                        });
+                                      },
+                                    ),
+                                  )),
+                            ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
