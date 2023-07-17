@@ -22,6 +22,14 @@ class AppApi {
     return firestore.collection('posts').snapshots();
   }
 
+  //get babysitters
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getActiveBabySitters() {
+    return firestore
+        .collection('users')
+        .where('isBabySitter', isEqualTo: true)
+        .snapshots();
+  }
+
   //get post comments
   static Stream<QuerySnapshot<Map<String, dynamic>>> getPostsComments(
       String id) {

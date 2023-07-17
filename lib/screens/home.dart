@@ -6,6 +6,7 @@ import 'package:baby_care/function/guide.dart';
 import 'package:baby_care/function/profile.dart';
 import 'package:baby_care/model/post_model.dart';
 import 'package:baby_care/model/userModel.dart';
+import 'package:baby_care/screens/baby_sitting.dart';
 import 'package:baby_care/screens/post_details.dart';
 import 'package:baby_care/screens/post_submission_page.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     DoctorListPage(),
     PostSubmissionPage(),
     GuidelinesPage(),
-    Text('baby')
+    BabySitting()
   ];
 
   @override
