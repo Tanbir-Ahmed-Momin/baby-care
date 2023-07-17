@@ -32,7 +32,6 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Baby Care'),
-        backgroundColor: Color(0xFFFF4891),
         actions: [
           IconButton(
             icon: ClipOval(
@@ -45,7 +44,10 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Profile()),
+                MaterialPageRoute(
+                    builder: (context) => Profile(
+                          userModel: widget.userModel,
+                        )),
               );
             },
           ),
@@ -53,7 +55,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Color(0xFFFF4891),
+        selectedItemColor: const Color(0xFFFF4891),
         currentIndex: _currentIndex,
         onTap: (int index) {
           setState(() {

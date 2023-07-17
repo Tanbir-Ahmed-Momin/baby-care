@@ -4,6 +4,8 @@ import 'package:baby_care/model/post_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../model/userModel.dart';
+
 class AppApi {
   //firebase auth instance
   static FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -41,7 +43,7 @@ class AppApi {
     return firestore
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set({
+        .update({
       'phone': number,
     });
   }
@@ -51,7 +53,7 @@ class AppApi {
     return firestore
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set({
+        .update({
       'name': name,
     });
   }
@@ -61,7 +63,7 @@ class AppApi {
     return firestore
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set({
+        .update({
       'address': address,
     });
   }
@@ -71,7 +73,7 @@ class AppApi {
     return firestore
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set({
+        .update({
       'uid': uId,
     });
   }
@@ -90,4 +92,7 @@ class AppApi {
           'https://firebasestorage.googleapis.com/v0/b/babycare-184d3.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=e5594834-444e-4943-9251-118e94aa62bd'
     });
   }
+
+  /// current user model
+  static late UserModel currentUserModel;
 }

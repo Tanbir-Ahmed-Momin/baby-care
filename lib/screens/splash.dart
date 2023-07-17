@@ -18,7 +18,7 @@ class splash extends StatefulWidget {
 class _splashState extends State<splash> {
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 5000), () {
+    Future.delayed(const Duration(milliseconds: 700), () {
       setState(() {
         if (FirebaseAuth.instance.currentUser != null) {
           AppApi.firestore
@@ -26,6 +26,8 @@ class _splashState extends State<splash> {
               .doc(FirebaseAuth.instance.currentUser!.uid)
               .get()
               .then((value) {
+            UserModel userModel = UserModel.fromJson(value.data()!);
+            AppApi.currentUserModel = userModel;
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                   builder: (context) =>

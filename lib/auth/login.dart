@@ -175,13 +175,15 @@ class _loginState extends State<login> {
                                       .signInWithEmailAndPassword(
                                           email: emailController.text.trim(),
                                           password: passController.text.trim());
-                                  String userImage = "";
                                   AppApi.firestore
                                       .collection('users')
                                       .doc(FirebaseAuth
                                           .instance.currentUser!.uid)
                                       .get()
                                       .then((value) {
+                                    UserModel userModel =
+                                        UserModel.fromJson(value.data()!);
+                                    AppApi.currentUserModel = userModel;
                                     Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
