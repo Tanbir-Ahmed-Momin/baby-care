@@ -22,7 +22,7 @@ class _BabySittingState extends State<BabySitting> {
         .then((value) {
       isBabySittingActive = value['isBabySitter'];
       setState(() {
-        
+
       });
     });
   }
