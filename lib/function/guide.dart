@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:baby_care/model/guideLine_model.dart';
 import 'package:baby_care/screens/guide_line_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../Api/api.dart';
 
 class guide extends StatefulWidget {
+
+
+
   const guide({super.key});
 
   @override
@@ -12,6 +18,10 @@ class guide extends StatefulWidget {
 }
 
 class _guideState extends State<guide> {
+
+  final _searchController = TextEditingController();
+  List<DocumentSnapshot> documents = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,13 +31,16 @@ class _guideState extends State<guide> {
           Container(
             padding: EdgeInsets.all(16),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search...',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
               onChanged: (value) {
-                // Handle search text changes
+                setState(() {
+
+                });
               },
             ),
           ),
@@ -44,11 +57,24 @@ class _guideState extends State<guide> {
                   case ConnectionState.done:
                   case ConnectionState.active:
                     if (snapshot.hasData) {
+
+                      documents = snapshot.data!.docs;
+                      //todo Documents list added to filterTitle
+                      if (_searchController.text.isNotEmpty) {
+                        documents = documents.where((element) {
+                          return element
+                              .get('title')
+                              .toString()
+                              .toLowerCase()
+                              .contains(_searchController.text.toLowerCase());
+                        }).toList();
+                      }
+
                       return ListView.builder(
-                          itemCount: snapshot.data!.size,
+                          itemCount: documents.length,
                           itemBuilder: (context, index){
                             return _guideLineWidget(
-                                GuideLineModel.fromJson( snapshot.data!.docs[index].data())
+                                GuideLineModel.fromRawJson(jsonEncode(documents[index].data()))
                             );
                           });
                     } else {
