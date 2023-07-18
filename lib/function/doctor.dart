@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:baby_care/screens/doctor_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,12 +17,14 @@ class doctor extends StatefulWidget {
 
 class _doctorState extends State<doctor> {
   final _searchController = TextEditingController();
+  List<DocumentSnapshot> documents = [];
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //_searchController.addListener(_searchValue);
+    _searchController.addListener(_searchValue);
   }
 
   void _searchValue() {
@@ -41,14 +46,13 @@ class _doctorState extends State<doctor> {
             padding: EdgeInsets.all(16),
             child: TextField(
               controller: _searchController,
-              decoration: InputDecoration(
+
+              decoration: const InputDecoration(
                 hintText: 'Search...',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
-                // Handle search text changes
-              },
+
             ),
           ),
           Expanded(
@@ -64,11 +68,25 @@ class _doctorState extends State<doctor> {
                   case ConnectionState.done:
                   case ConnectionState.active:
                     if (snapshot.hasData) {
+
+                      documents = snapshot.data!.docs;
+                      //todo Documents list added to filterTitle
+                      if (_searchController.text.isNotEmpty) {
+                        documents = documents.where((element) {
+                          return element
+                              .get('name')
+                              .toString()
+                              .toLowerCase()
+                              .contains(_searchController.text.toLowerCase());
+                        }).toList();
+                      }
+
+
                       return ListView.builder(
-                          itemCount: snapshot.data!.size,
+                          itemCount: documents.length,
                           itemBuilder: (context, index) {
-                            return _doctorWidget(DoctorModel.fromJson(
-                                snapshot.data!.docs[index].data()));
+                            return _doctorWidget(DoctorModel.fromRawJson(
+                                jsonEncode(documents[index].data())));
                           });
                     } else {
                       return const Center(

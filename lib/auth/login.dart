@@ -35,53 +35,58 @@ class _loginState extends State<login> {
       backgroundColor: const Color(0xFFEEEEEE),
       body: Stack(
         children: <Widget>[
-          Positioned(
-            right: -getSmallDiameter(context) / 3,
-            top: -getSmallDiameter(context) / 3,
-            child: Container(
-              width: getSmallDiameter(context),
-              height: getSmallDiameter(context),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                      colors: [Color(0xFFB226B2), Color(0xFFFF6DA7)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter)),
-            ),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Image.asset('image/baby_caring.png'),
           ),
-          Positioned(
-            left: -getBiglDiameter(context) / 4,
-            top: -getBiglDiameter(context) / 4,
-            child: Container(
-              width: getBiglDiameter(context),
-              height: getBiglDiameter(context),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                      colors: [Color(0xFFB226B2), Color(0xFFFF4891)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter)),
-              child: const Center(
-                child: Text(
-                  "Baby Care",
-                  style: TextStyle(
-                      // fontFamily: "Pacifico",
-                      fontSize: 40,
-                      color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            right: -getBiglDiameter(context) / 2,
-            bottom: -getBiglDiameter(context) / 2,
-            child: Container(
-              width: getBiglDiameter(context),
-              height: getBiglDiameter(context),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: Color(0xFFF3E9EE)),
-            ),
-          ),
+          // Positioned(
+          //   right: -getSmallDiameter(context) / 3,
+          //   top: -getSmallDiameter(context) / 3,
+          //   child: Container(
+          //     width: getSmallDiameter(context),
+          //     height: getSmallDiameter(context),
+          //     decoration: const BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         gradient: LinearGradient(
+          //             colors: [Color(0xFFB226B2), Color(0xFFFF6DA7)],
+          //             begin: Alignment.topCenter,
+          //             end: Alignment.bottomCenter)),
+          //   ),
+          // ),
+          // Positioned(
+          //   left: -getBiglDiameter(context) / 4,
+          //   top: -getBiglDiameter(context) / 4,
+          //   child: Container(
+          //     width: getBiglDiameter(context),
+          //     height: getBiglDiameter(context),
+          //     decoration: const BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         gradient: LinearGradient(
+          //             colors: [Color(0xFFB226B2), Color(0xFFFF4891)],
+          //             begin: Alignment.topCenter,
+          //             end: Alignment.bottomCenter)),
+          //     child: const Center(
+          //       child: Text(
+          //         "Baby Care",
+          //         style: TextStyle(
+          //             // fontFamily: "Pacifico",
+          //             fontSize: 40,
+          //             color: Colors.white),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // Positioned(
+          //   right: -getBiglDiameter(context) / 2,
+          //   bottom: -getBiglDiameter(context) / 2,
+          //   child: Container(
+          //     width: getBiglDiameter(context),
+          //     height: getBiglDiameter(context),
+          //     decoration: const BoxDecoration(
+          //         shape: BoxShape.circle, color: Color(0xFFF3E9EE)),
+          //   ),
+          // ),
           Align(
             alignment: Alignment.bottomCenter,
             child: ListView(

@@ -10,10 +10,10 @@ class DoctorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFFF4891),
+        backgroundColor: const Color(0xFFFF4891),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 13.0,vertical: 10.0),
+        padding:const EdgeInsets.symmetric(horizontal: 13.0,vertical: 10.0),
         child: ListView(
           children: [
             Row(

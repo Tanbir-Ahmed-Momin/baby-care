@@ -21,6 +21,9 @@ class _BabySittingState extends State<BabySitting> {
         .get()
         .then((value) {
       isBabySittingActive = value['isBabySitter'];
+      setState(() {
+
+      });
     });
   }
 
