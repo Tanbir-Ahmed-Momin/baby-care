@@ -100,7 +100,7 @@ class _signupState extends State<signup> {
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                             icon: const Icon(
-                              Icons.email,
+                              Icons.phone,
                               color: Color(0xFFFF4891),
                             ),
                             focusedBorder: UnderlineInputBorder(
