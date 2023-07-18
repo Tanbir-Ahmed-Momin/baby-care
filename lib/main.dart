@@ -20,6 +20,14 @@ class MyApp extends StatelessWidget {
       title: "Baby Care",
       theme: ThemeData(
           useMaterial3: true,
+          bottomNavigationBarTheme:const BottomNavigationBarThemeData(
+            unselectedLabelStyle: TextStyle(
+              fontFamily: 'pacifico',
+            ),
+            selectedLabelStyle: TextStyle(
+              fontFamily: 'pacifico',
+            )
+          ),
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFFFF4891),
@@ -28,6 +36,10 @@ class MyApp extends StatelessWidget {
           appBarTheme: const AppBarTheme(
             backgroundColor: Color(0xFFFF4891),
             foregroundColor: Colors.white,
+            titleTextStyle: TextStyle(
+              fontFamily: 'pacifico',
+              fontSize: 18.0
+            )
           ),
           inputDecorationTheme: const InputDecorationTheme(
               labelStyle: TextStyle(color: Color(0xFFFF4891)),

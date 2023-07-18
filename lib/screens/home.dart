@@ -1,11 +1,11 @@
-import 'dart:convert';
+
 
 import 'package:baby_care/Api/api.dart';
 import 'package:baby_care/function/doctor.dart';
 import 'package:baby_care/function/guide.dart';
 import 'package:baby_care/function/profile.dart';
 import 'package:baby_care/model/post_model.dart';
-import 'package:baby_care/model/userModel.dart';
+
 import 'package:baby_care/screens/baby_sitting.dart';
 import 'package:baby_care/screens/post_details.dart';
 import 'package:baby_care/screens/post_submission_page.dart';
@@ -82,32 +82,41 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.home_filled,
+              Icons.home_outlined,
             ),
+            activeIcon: Icon(Icons.home_filled),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.people,
+              Icons.medical_services_outlined,
+            ),
+            activeIcon:Icon(
+              Icons.medical_services_rounded,
             ),
             label: 'Doctor List',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.post_add,
+              Icons.add_box_outlined,
             ),
+            activeIcon: Icon(Icons.add_box),
             label: 'Post',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.list,
+              Icons.featured_play_list_outlined,
+            ),
+            activeIcon: Icon(
+              Icons.featured_play_list,
             ),
             label: 'Guidelines',
           ),
           BottomNavigationBarItem(
-            icon: Icon(
+            activeIcon: Icon(
               Icons.baby_changing_station,
             ),
+            icon: Icon(Icons.baby_changing_station_outlined),
             label: 'Babysitting',
           ),
         ],
@@ -211,7 +220,7 @@ class _PostPageState extends State<PostPage> {
       titleAlignment: ListTileTitleAlignment.top,
       title: Text(
         postModel.postedBy,
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Roboto'),
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,6 +229,10 @@ class _PostPageState extends State<PostPage> {
             postModel.details,
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 14.0
+              )
           ),
           const SizedBox(
             height: 5.0,
@@ -233,7 +246,10 @@ class _PostPageState extends State<PostPage> {
                     return const SizedBox();
                   case ConnectionState.done:
                   case ConnectionState.active:
-                    return Text('${snapshot.data?.size ?? 0} replies');
+                    return Text('${snapshot.data?.size ?? 0} replies', style: TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 12.0
+                    ),);
                 }
               })
         ],
