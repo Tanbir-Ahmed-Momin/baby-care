@@ -62,6 +62,7 @@ class _guideState extends State<guide> {
                       //todo Documents list added to filterTitle
                       if (_searchController.text.isNotEmpty) {
                         documents = documents.where((element) {
+                          print(element.id);
                           return element
                               .get('title')
                               .toString()
